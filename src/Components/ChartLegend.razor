@@ -1,0 +1,26 @@
+﻿<table>
+    <thead>
+        <tr>
+            <th colspan="3">Legenda</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ChartItems ?? Enumerable.Empty<Models.ChartItem>())
+        {
+            <tr>
+                <td>
+                    <div style="width: 24px; height: 24px; background-color: @item.HtmlColor"></div>
+                </td>
+                <td>@item.Label:</td>
+                <td>@item.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<Models.ChartItem> ChartItems { get; set; }
+
+}

@@ -1,0 +1,72 @@
+﻿<svg viewBox="0 0 100 100">
+    @if(ChartItems is not null && ChartItems.Count() == 1)
+    {
+        <circle fill="@ChartItems.First().HtmlColor" cx="50" cy="50" r="50" />
+    }
+    else 
+    {
+        @foreach(var (color, pathDefinition) in GetPieSlicesPathDefinitions())
+        {
+            <path fill="@color" d="@pathDefinition" />
+        }
+    }
+</svg>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<Models.ChartItem> ChartItems { get; set; }
+
+    private IEnumerable<(string color, string pathDefinition)> GetPieSlicesPathDefinitions()
+    {
+        if (ChartItems is null || !ChartItems.Any())
+            yield break;
+
+        var elements = ChartItems.ToArray();
+        var sumOfValues = ChartItems.Sum(ci => ci.Value);
+
+        float fromValue = 0;
+        float toValue = 0;
+
+        foreach (var element in elements)
+        {
+            fromValue = toValue;
+            toValue = toValue + element.Value / sumOfValues;
+
+            yield return (element.HtmlColor, CreatePieSlicePathDefinition(fromValue, toValue));
+        }
+    }
+
+    static string CreatePieSlicePathDefinition(float fromValue, float toValue)
+    {
+        var amplitude = toValue - fromValue;
+        var isLargeAngle = amplitude > .5f;
+
+        return $@"
+            M 50 50
+            L {FormatCoordinates(ComputeCoordinatesForValue(fromValue))}
+            A 50 50 0 {(isLargeAngle ? '1' : '0')} 0 {FormatCoordinates(ComputeCoordinatesForValue(toValue))}
+            L 50 50
+            Z
+        ";
+    }
+
+    private static (float x, float y) ComputeCoordinatesForValue(float val)
+    {
+        var (sin, cos) = MathF.SinCos(val * MathF.Tau);
+
+        var x = cos * 50 + 50;
+        var y = -sin * 50 + 50;
+
+        return (x, y);
+    }
+
+    private static string FormatCoordinates((float x, float y) coordinates)
+    {
+        var (x, y) = coordinates;
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+
+        return $"{x.ToString(culture)} {y.ToString(culture)}";
+    }
+
+}

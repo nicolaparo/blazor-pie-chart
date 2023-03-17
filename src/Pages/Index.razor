@@ -1,0 +1,38 @@
+﻿@page "/"
+@using BlazorPieChart.Components;
+@using BlazorPieChart.Models;
+
+<div style="width: 300px; border: 1px solid black">
+    <PieChart ChartItems="items" />
+    <ChartLegend ChartItems="items" />
+</div>
+
+@code {
+    private ChartItem[] items = new ChartItem[]
+    {
+        new Models.ChartItem
+        {
+            Label = "Elemento 1",
+            Value = 42,
+            HtmlColor = "hsl(240, 100%, 30%)"
+        },
+        //new Models.ChartItem
+        //{
+        //    Label = "Elemento 1",
+        //    Value = 22,
+        //    HtmlColor = "hsl(240, 100%, 40%)"
+        //}
+        //new Models.ChartItem
+        //{
+        //    Label = "Elemento 2",
+        //    Value = 83,
+        //    HtmlColor = "hsl(240, 100%, 40%)"
+        //},
+        //new Models.ChartItem
+        //{
+        //    Label = "Elemento 3",
+        //    Value = 23,
+        //    HtmlColor = "hsl(240, 100%, 50%)"
+        //},
+    };
+}
